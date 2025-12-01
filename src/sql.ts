@@ -1,4 +1,4 @@
-import { PglCreateAccountOpts, PglId, PglSqlQueryParams } from "./types";
+import { PglCreateAccountOpts, PglId, PglSqlQueryParams } from "./types.js";
 
 export class PglSql {
   private readonly PREFIX = "pgledger";

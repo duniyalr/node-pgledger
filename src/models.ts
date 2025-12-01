@@ -1,4 +1,4 @@
-import { PglDbAccount, PglDbTransfer, PglId } from "./types";
+import { PglDbAccount, PglDbTransfer, PglId } from "./types.js";
 
 export class PglAccount {
   public readonly id: PglId;
