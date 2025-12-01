@@ -1,3 +1,3 @@
-export { PGLedger } from "./lib.js";
-export * from "./models.js";
-export * from "./types.js";
+export { PGLedger } from "./lib";
+export * from "./models";
+export * from "./types";

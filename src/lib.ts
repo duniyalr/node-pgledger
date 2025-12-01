@@ -6,9 +6,9 @@ import {
   PglDbTransfer,
   PglId,
   PglSqlQueryParams,
-} from "./types.js";
-import { PglSql } from "./sql.js";
-import { PglAccount, PglTransfer } from "./models.js";
+} from "./types";
+import { PglSql } from "./sql";
+import { PglAccount, PglTransfer } from "./models";
 
 export class PGLedger {
   private readonly _seq: Sequelize;
