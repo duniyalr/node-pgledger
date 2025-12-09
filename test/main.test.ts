@@ -9,10 +9,10 @@ describe("public tests", () => {
   beforeAll(async () => {
     pgl = await PGLedger.init({
       host: "localhost",
-      port: 5432,
-      username: "postgres",
-      password: "postgres",
-      database: "test-ledger",
+      port: 4993,
+      username: "miropay_test",
+      password: "rzgdLcTYazR7ITvXPgHRawq0frRbn1k0/w1L6l+ZCP4=",
+      database: "pg_ledger",
       ssl: false,
     });
 
@@ -57,6 +57,26 @@ describe("public tests", () => {
     ]);
 
     expect(tIds).toEqual(expect.arrayContaining([expect.any(String)]));
+  });
+
+  it("All account transfers", async () => {
+    const accountId1 = await pgl.createAccount("test account 1", "USD");
+    const accountId2 = await pgl.createAccount("test account 2", "USD");
+    const accountId3 = await pgl.createAccount("test account 3", "USD");
+
+    const tIds = await pgl.createTransfers([
+      { accountId1: accountId1, accountId2: accountId2, amount: "1000" },
+      { accountId1: accountId2, accountId2: accountId3, amount: "1000" },
+    ]);
+
+    const allAccountTransfers = await pgl.allAccountTransfers(accountId2);
+
+    expect(Array.isArray(allAccountTransfers)).toBe(true);
+    expect(
+      allAccountTransfers.every(
+        (item) => item instanceof PglTransfer && tIds.includes(item.id)
+      )
+    ).toBe(true);
   });
 
   it("Lookup transfers", async () => {

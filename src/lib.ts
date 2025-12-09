@@ -208,6 +208,19 @@ export class PGLedger {
     return transferIds;
   }
 
+  public async allAccountTransfers(pglId: PglId): Promise<PglTransfer[]> {
+    const query = this._sql.allAccountTransfers(pglId);
+
+    const result = await this._query<PglDbTransfer>(query);
+
+    const transfers: PglTransfer[] = [];
+    for (const row of result) {
+      transfers.push(new PglTransfer(row));
+    }
+
+    return transfers;
+  }
+
   public async queryTransfers(
     opts?: PglTransferQueryOpts
   ): Promise<PglTransfer[]> {

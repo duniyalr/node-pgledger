@@ -74,6 +74,24 @@ export class PglSql {
     return [`SELECT id FROM ${this.CREATE_TRANSFERS_FUNC}(${transfers})`, {}];
   }
 
+  public allAccountTransfers(pglId: PglId): PglSqlQueryParams {
+    return [
+      `SELECT
+        id,
+        from_account_id,
+        to_account_id,
+        amount,
+        created_at,
+        event_at,
+        metadata FROM ${this.TRANSFER_VIEW}
+        where ? IN(from_account_id, to_account_id)
+      `,
+      {
+        replacements: [pglId],
+      },
+    ];
+  }
+
   public queryTransfers(opts: PglTransferQueryOpts): PglSqlQueryParams {
     const conditions: string[] = [];
     const replacements: Record<string, unknown> = {};
