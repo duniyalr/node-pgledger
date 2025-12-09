@@ -2,6 +2,7 @@ import {
   Options as SequelizeOptions,
   QueryOptions as SequelizeQueryOptions,
 } from "sequelize";
+import { PglAccount } from "./models";
 
 export type PglId = string;
 export type Sql = string;
@@ -36,4 +37,22 @@ export type PglCreateAccountOpts = {
   currency: string;
   allowNegativeBalances?: boolean;
   allowPositiveBalances?: boolean;
+};
+
+export type PglCreateTransferOpts = {
+  accountId1: PglId | PglAccount;
+  accountId2: PglId | PglAccount;
+  amount: string;
+  eventAt?: Date;
+  metadata?: Record<string, unknown>;
+};
+
+export type PglTransferQueryOpts = {
+  fromAccountId?: PglId | PglAccount;
+  toAccountId?: PglId | PglAccount;
+  dateFrom?: Date;
+  dateTo?: Date;
+  limit?: number;
+  skip?: number;
+  order?: "ASC" | "DSC";
 };

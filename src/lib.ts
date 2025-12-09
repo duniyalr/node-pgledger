@@ -1,11 +1,13 @@
 import { Options as SequelizeOptions, Sequelize } from "sequelize";
 import {
   PglCreateAccountOpts,
+  PglCreateTransferOpts,
   PglDbAccount,
   PglDbOpts,
   PglDbTransfer,
   PglId,
   PglSqlQueryParams,
+  PglTransferQueryOpts,
 } from "./types";
 import { PglSql } from "./sql";
 import { PglAccount, PglTransfer } from "./models";
@@ -82,7 +84,7 @@ export class PGLedger {
     name: string,
     currency: string,
     allowNegativeBalances?: boolean,
-    allowPositiveBalances?: boolean,
+    allowPositiveBalances?: boolean
   ): Promise<PglId>;
   /**
    *
@@ -93,7 +95,7 @@ export class PGLedger {
     p1: string | PglCreateAccountOpts,
     p2?: string,
     p3?: boolean,
-    p4?: boolean,
+    p4?: boolean
   ): Promise<PglId> {
     let opts: PglCreateAccountOpts;
     if (typeof p1 === "string" && typeof p2 === "string") {
@@ -107,7 +109,7 @@ export class PGLedger {
       opts = p1;
     } else {
       throw new Error(
-        "you should provide name and currency or complete create account options object",
+        "you should provide name and currency or complete create account options object"
       );
     }
 
@@ -129,39 +131,90 @@ export class PGLedger {
     return accounts;
   }
 
+  public async createTransfer(opts: PglCreateTransferOpts): Promise<PglId>;
   public async createTransfer(
-    account1: PglAccount,
-    account2: PglAccount,
-    amount: string,
+    account1: PglAccount | PglCreateTransferOpts,
+    account2?: PglAccount,
+    amount?: string,
     eventAt?: Date,
-    metadata?: Record<string, unknown>,
+    metadata?: Record<string, unknown>
   ): Promise<PglId>;
   public async createTransfer(
-    accountId1: PglId,
-    accountId2: PglId,
-    amount: string,
+    accountId1: PglId | PglCreateTransferOpts,
+    accountId2?: PglId,
+    amount?: string,
     eventAt?: Date,
-    metadata?: Record<string, unknown>,
+    metadata?: Record<string, unknown>
   ): Promise<PglId>;
   public async createTransfer(
-    acc1: PglId | PglAccount,
-    acc2: PglId | PglAccount,
-    amount: string,
+    acc1: PglId | PglAccount | PglCreateTransferOpts,
+    acc2?: PglId | PglAccount,
+    amount?: string,
     eventAt?: Date,
-    metadata?: Record<string, unknown>,
+    metadata?: Record<string, unknown>
   ): Promise<PglId> {
-    const accountId1 = acc1 instanceof PglAccount ? acc1.id : acc1;
-    const accountId2 = acc2 instanceof PglAccount ? acc2.id : acc2;
-    const query = this._sql.createTransfer(
-      accountId1,
-      accountId2,
-      amount,
-      eventAt,
-      metadata,
-    );
+    let opts: PglCreateTransferOpts;
+    let accountId1;
+    let accountId2;
+    if (typeof acc1 === "object" && !(acc1 instanceof PglAccount)) {
+      opts = acc1;
+    } else {
+      accountId1 = acc1 instanceof PglAccount ? acc1.id : acc1;
+      accountId2 = acc2 instanceof PglAccount ? acc2.id : acc2;
+
+      if (
+        typeof accountId1 === "string" &&
+        typeof accountId2 === "string" &&
+        typeof amount === "string"
+      ) {
+        opts = {
+          accountId1: accountId1,
+          accountId2: accountId2,
+          amount: amount,
+          eventAt: eventAt,
+          metadata: metadata,
+        };
+      } else {
+        throw new Error(
+          "you should provide accountId1 and accountId2 and amount or complete create transfer options object"
+        );
+      }
+    }
+
+    const query = this._sql.createTransfer(opts);
     const transferId = await this._queryAndReturnFirst<{ id: PglId }>(query);
 
     return transferId.id;
+  }
+
+  public async createTransfers(
+    opts: PglCreateTransferOpts[]
+  ): Promise<PglId[]> {
+    if (!opts.length) {
+      throw new Error(
+        "you should provide at least one create transfer option object"
+      );
+    }
+
+    const query = this._sql.createTransfers(opts);
+
+    const transfers = await this._query<{ id: PglId }>(query);
+
+    const transferIds: PglId[] = [];
+    for (const t of transfers) {
+      transferIds.push(t.id);
+    }
+
+    return transferIds;
+  }
+
+  public async queryTransfers(
+    opts?: PglTransferQueryOpts
+  ): Promise<PglTransfer[]> {
+    const query = this._sql.queryTransfers(opts ?? {});
+
+    const transfers = await this._query<PglTransfer>(query);
+    return transfers;
   }
 
   public async lookupTransfers(ids: PglId[]): Promise<PglTransfer[]> {
