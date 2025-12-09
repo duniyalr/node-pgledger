@@ -29,6 +29,23 @@
     "pgledger"
   ],
   "author": "@duniyalr",
+  "contributors": [
+    {
+      "name": "duniyalr",
+      "email": "duniyalr@gmail.com",
+      "url": "https://github.com/duniyalr"
+    },
+    {
+      "name": "javadakbari1994",
+      "email": "javad.akbari.1994@gmail.com",
+      "url": "https://github.com/javadakbari1994"
+    },
+    {
+      "name": "josephosan",
+      "email": "josephosan1381@gmail.com",
+      "url": "https://github.com/josephosan"
+    }
+  ],
   "license": "ISC",
   "description": "",
   "dependencies": {
