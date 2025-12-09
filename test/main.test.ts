@@ -9,10 +9,10 @@ describe("public tests", () => {
   beforeAll(async () => {
     pgl = await PGLedger.init({
       host: "localhost",
-      port: 4993,
-      username: "miropay_test",
-      password: "rzgdLcTYazR7ITvXPgHRawq0frRbn1k0/w1L6l+ZCP4=",
-      database: "pg_ledger",
+      port: 5432,
+      username: "postgres",
+      password: "postgres",
+      database: "test-ledger",
       ssl: false,
     });
 
