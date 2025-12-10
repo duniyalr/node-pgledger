@@ -33,7 +33,7 @@ export class PglTransfer {
 
   constructor(row: PglDbTransfer) {
     this.id = row.id;
-    this.fromAccountId = row.from_accound_id;
+    this.fromAccountId = row.from_account_id;
     this.toAccountId = row.to_account_id;
     this.amount = row.amount;
     this.createdAt = row.created_at;
