@@ -24,7 +24,7 @@ export type PglDbAccount = {
 
 export type PglDbTransfer = {
   id: string;
-  from_accound_id: string;
+  from_account_id: string;
   to_account_id: string;
   amount: string;
   created_at: Date;
